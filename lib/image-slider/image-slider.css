@@ -1,0 +1,151 @@
+
+
+.image-slider {
+	overflow:		hidden;
+	position:		relative;
+	
+	cursor:			pointer;
+}
+	.image-slider ul,
+	.image-slider ul li {
+		list-style:		none;
+		margin:		0;
+		padding:	0;
+	}
+	/* list */
+	.image-slider ul.list {
+		position:		absolute;
+		right:			10px;
+		top:			0;
+	}
+		.image-slider ul.list a {
+			font-size:			13px !important;
+			font-weight:		normal;
+			color:				#000;
+			text-decoration:	none;
+		}
+		.image-slider ul.list li {
+			display:			block;
+			width:				13px;
+			height:				18px;
+			line-height:		18px;
+		}
+	/* images */
+	.image-slider ul.images {
+			position:	absolute;
+			top:		0;
+			left:		0;
+	}
+		.image-slider ul.images li {
+			position:	absolute;
+			top:		0;
+			left:		0;
+		}	
+	/* nav */
+	.image-slider ul.nav {
+		display:		none;
+	}
+	.image-slider.mouse-on ul.nav {
+		display:		block !important;
+	}
+		.image-slider ul.nav li a {
+			position:	absolute;
+			
+			display:		block;
+			width:			577px;
+			height:			30px;
+			overflow:		hidden;
+			text-indent:	-9999px;
+			
+			background-color:		rgba(0,0,0,0.1);
+			background-position:	center center;
+			background-repeat:		no-repeat;
+			
+			opacity:				0.5;
+		}
+		.image-slider ul.nav li a:hover {
+			background-color:		rgba(0,0,0,0.4);
+			opacity:				1;
+		}
+	
+		.image-slider ul.nav li.prev a {
+			top:		0;
+			left:		0;
+			background-image:		url(/r2013/images/image-slider/prev.gif)  ;
+		}
+		.image-slider ul.nav li.next a {
+			bottom:		0;
+			left:		0;
+			background-image:		url(/r2013/images/image-slider/next.gif)  ;
+		}
+	/* descriptions */
+	.image-slider .descriptions {
+		position:	absolute;
+		top:		53px;
+		left:		0;
+		
+		width:		226px;
+		height:		269px;
+	}
+		.image-slider .descriptions .dt {
+			position:	absolute;
+			top:		0;
+			left:		0;
+			
+			display:			block;
+			width:				134px;
+			height:				22px;
+			line-height:		22px;
+			font-size:			12px;
+			font-weight:		bold;
+			color:				white;
+			background:			#333;
+			text-align:			center;
+		}
+		.image-slider .descriptions .category {
+			position:	absolute;
+			top:		0;
+			left:		136px;
+			
+			display:			block;
+			width:				74px;
+			height:				22px;
+			line-height:		22px;
+			font-size:			12px;
+			font-weight:		bold;
+			color:				white;
+			background:			#55B7E5;
+			text-align:			center;
+		}
+		.image-slider .descriptions .title {
+			position:	absolute;
+			top:		24px;
+			left:		0;
+			
+			display:			block;
+			width:				213px; /* 226 - 10 - 3 */
+			height:				65px; /* 77 - 6 * 2 */
+			line-height:		32px;
+			font-size:			26px;
+			color:				white;
+			background:			rgba(0,0,0,0.7);
+			text-align:			left;
+			
+			padding:			6px 3px 6px 10px;
+		}
+		.image-slider .descriptions .body {
+			position:	absolute;
+			top:		103px;
+			left:		0;
+			
+			display:			block;
+			width:				206px; 
+			font-size:			13px;
+			line-height:		1.4em;
+			color:				white;
+			background:			rgba(0,0,0,0.7);
+			text-align:			left;
+			
+			padding:			6px 10px;
+		}
+
