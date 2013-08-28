@@ -32,7 +32,7 @@ var MyMap = Class.create(enchant.extendMap.ExMap, {
 			return true;
 		return false;
 	},
-	"investigate" : function(player, x,y) {
+	"investigate" : function(player, x,y,is_foot) {
 		if (x < 0 || this.width <= x || y < 0 || this.height <= y) {
 			return false;
 		}
@@ -71,6 +71,10 @@ var MyMap = Class.create(enchant.extendMap.ExMap, {
 			case 352 : console.log('この先、東京'); return true; break;
 			// case 107 : console.log('10円を見つけた'); return true; break;	
 		} */
+		if (is_foot) {
+			dialog = new DialogScene(game, {"message" : "%Name%はあしもとをしらべた。\nしかしなにもみつからなかった。", "name" : player.name });
+			dialog.show();
+		}
 		return false;
 	},
 	"createForegroundMap" : function() {

@@ -8,10 +8,15 @@ window.onload = function() {
 	game.keybind(88,'a'); // X
 	game.keybind(90,'b'); // Z
 	game.fps = 15;
-	game.preload('map0.gif','chara0.gif','dq_title.png');
+	game.preload('map0.gif','chara0.gif','dq_title.png' ,
+					'avatarBg1.png','avatarBg2.png','avatarBg3.png','monster/bigmonster1.gif');
 	game.onload = function() {
 		var title = new TitleScene(game);
 		var map = new MapScene(game);
+		
+		configs.scenes = {};
+		configs.scenes.title = title;
+		configs.scenes.map = map;
 			
 		title.replaceScene();
 		title.addEventListener("touchstart" , function() {
@@ -47,6 +52,7 @@ window.onload = function() {
 			showprompt(function(name) {
 				map.player.name = name;
 				map.replaceScene();
+				//fight.replaceScene();
 			});
 		});
 	};

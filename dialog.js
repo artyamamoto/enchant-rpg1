@@ -20,21 +20,24 @@ var Dialog = Class.create(Group, {
 		options.padding = options.padding || 8;
 		return options;
 	},
+	"setMessage" : function(message) {
+		this.idx = 0;
+		this.messages = [];
+		if (message.indexOf("\n") < 0) {
+			this.messages.push(message);
+		} else {
+			this.messages = message.split("\n");
+		}	
+	},
 	"initialize" : function(game, options) {
 		Group.call(this);
 		
 		options = this._options(options);
-			
-		this.messages = [];
-		if (options.message.indexOf("\n") < 0) {
-			this.messages.push(options.message);
-		} else {
-			this.messages = options.message.split("\n");
-		}
+		
+		this.setMessage(options.message);	
 		
 		this.game = game;
 		this.name = options.name || "名無し";
-		this.idx = 0;
 			
 		// x, y 
 		var x = 0, y = 0;
