@@ -33,7 +33,7 @@ window.onload = function() {
 				jQuery.showalert({
 					"type" : "prompt" , 
 					"title" : "名前を入力してください。",
-					"value" : "名無し" , 
+					"value" : Player.getInstance().name , 
 					"ok" : '&nbsp;OK&nbsp;',
 					"cancel" : null,
 					"callback" : function(name) {
@@ -45,7 +45,7 @@ window.onload = function() {
 				});
 			};
 			showprompt(function(name) {
-				map.player.name = name;
+				Player.getInstance().name = name;
 				map.replaceScene();
 			});
 		});

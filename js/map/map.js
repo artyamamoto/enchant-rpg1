@@ -1,5 +1,7 @@
 
-var MyMap = Class.create(enchant.extendMap.ExMap, {
+var RPGMap = RPGMap || {};
+
+RPGMap.Map = Class.create(enchant.extendMap.ExMap, {
 	"checkTile" : function(x,y,n) {
 		var n = n || 0;
 		if (x < 0 || this.width <= x || y < 0 || this.height <= y || !this._data[n]) {
@@ -32,7 +34,7 @@ var MyMap = Class.create(enchant.extendMap.ExMap, {
 			return true;
 		return false;
 	},
-	"investigate" : function(player, x,y,is_foot) {
+	"investigate" : function(x,y,is_foot) {
 		if (x < 0 || this.width <= x || y < 0 || this.height <= y) {
 			return false;
 		}
@@ -49,12 +51,13 @@ var MyMap = Class.create(enchant.extendMap.ExMap, {
 			if (!data.ignored && x == data.pos[0] && y == data.pos[1]) {
 				var dialog = null;
 				if (data.message) {
-					console.log(data.message);
-					dialog = new DialogScene(game, {"message" : data.message ,"name" : player.name } );
+					var name = Player.getInstance().name;
+					dialog = new DialogScene(game, {"message" : data.message ,"name" : name } );
 				} else if (data.pickup) {
 					this.events[i].ignored = true;
 					
-					dialog = new DialogScene(game, {"message" : data.pickup, "name" : player.name });
+					var name = Player.getInstance().name;
+					dialog = new DialogScene(game, {"message" : data.pickup, "name" : name });
 					this._data[1][y][x] = -1;
 					this.collisionData[y][x] = 0;
 				}
@@ -92,14 +95,19 @@ var MyMap = Class.create(enchant.extendMap.ExMap, {
 		this.collisionData = configs.map[type].collision || [];	
 		this.seaData = configs.map[type].seamap || [[]];
 		this.events = configs.map[type].events || [];
+
+		
+		this.player = new RPGMap.Player(this, 24,18);
+		this.characters = [];
+		this.characters.push( new RPGMap.Character(this, 24, 17) );	
 	} // initialize 
 }); // Class.create
 
-MyMap.getInstance = function(type) {
-	if (!MyMap._instances)
-		MyMap._instances = {};
-	if (! MyMap._instances[type])
-		MyMap._instances[type] = new MyMap(type);
-	return MyMap._instances[type];
+RPGMap.Map.getInstance = function(type) {
+	if (!RPGMap.Map._instances)
+		RPGMap.Map._instances = {};
+	if (! RPGMap.Map._instances[type])
+		RPGMap.Map._instances[type] = new RPGMap.Map(type);
+	return RPGMap.Map._instances[type];
 };
 

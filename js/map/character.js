@@ -1,6 +1,6 @@
 
 var RPGMap = RPGMap || {};
-RPGMap.Player = Class.create(Sprite, {
+RPGMap.Character = Class.create(Sprite, {
 	"initialize" : function(map,x,y) {
 		Sprite.call(this, 32,32);
 		this.x = x * 16 - 8;
@@ -17,25 +17,13 @@ RPGMap.Player = Class.create(Sprite, {
 		this.walk = 1;
 		this.vx = 0;
 		this.vy = 0;
-		this._touched = false;
-		this._touched_cnt = 0;
-		this.addEventListener('touchstart' , function() {
-			this._touched = true;
-		});
-		this.addEventListener('touchend' , function() {
-			this._touched = false;
-		});
-
 		this.addEventListener('enterframe', function() {
 			if (! this.visible) 
 				return ;
 			
-			if (this._touched) 
-				this._touched_cnt++;
-			else 
-				this._touched_cnt = 0;
-				
 			this.frame = this.dir * 3 + this.walk;
+			return;
+
 			if (this.isMoving) {
 				this._move();
 			} else {
@@ -82,23 +70,11 @@ RPGMap.Player = Class.create(Sprite, {
 						}
 					}
 				} 
-				if (event_flg != "investigate") {
-					this._try_investigate = 0;
-				} 
-				if (! event_flg) {
-					if (this._touched_cnt > 6) {
-						this.map.investigate(this.x + 8, this.y + 8, true);
-						this._touched_cnt = 0;
-						this._touched = false;
-					}
-				}
 			}
 		});
 	} ,
 	"_move" : function() {
-		 this.moveBy(this.vx, this.vy);	
-		//this.x += this.vx;
-		//this.y += this.vy;	
+		this.moveBy(this.vx, this.vy);		
 		if (game.frame % 3 == 0) {
 			this.walk = (this.walk + 1) % 3;
 		}
@@ -107,40 +83,6 @@ RPGMap.Player = Class.create(Sprite, {
 		{
 			this.isMoving = false;
 			this.walk = 1;
-			
-			if (Math.floor(Math.random() * 100) < 5) {
-				new SwitchScreenScene( game, function() {
-					new FightScene(game, configs.scenes.map).replaceScene();
-				});
-			} 
 		}
-	} ,
-	"investigate" : function() {
-		if (! this.vx && ! this.vy) {
-			var x = this.x;
-			var y = this.y;
-			switch(this.dir) {
-				case 1 : x = x - 16; break;
-				case 2 : x = x + 16; break;
-				case 3 : y = y - 16; break;
-				case 4 : y = y + 16; break;
-			}
-			x += 16; y += 16;
-			var hit = false;
-			if (0 <= x && x < this.map.width) {
-				if (0 <= y && y < this.map.height) {
-					if (! this.map.isSea(x, y)) {
-						//var i = map.checkTile(x,y);
-						//console.log(x,y,i);	
-						this._lock_investigate = true;
-						hit = this.map.investigate( x,y);
-					}
-				}
-			}
-			if (! hit) {
-				this._lock_investigate = true;
-				hit = this.map.investigate(this.x + 8, this.y + 8);
-			}
-		}
-	}
+	} 
 });
