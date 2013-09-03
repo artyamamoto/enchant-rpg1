@@ -84,13 +84,22 @@ var MyMap = Class.create(enchant.extendMap.ExMap, {
 		map.loadData(configs.map.field.foreground);
 		return map;
 	} , 	
-	"initialize" : function() {
+	"initialize" : function(type) {
+		var type = type || "field";
 		enchant.extendMap.ExMap.call(this, 16, 16);
 		this.image = game.assets['map0.gif'];
-		this.loadData.apply(this, configs.map.field.map );
-		this.collisionData = configs.map.field.collision;	
-		this.seaData = configs.map.field.seamap;
-		this.events = configs.map.field.events;
+		this.loadData.apply(this, configs.map[type].map );
+		this.collisionData = configs.map[type].collision || [];	
+		this.seaData = configs.map[type].seamap || [[]];
+		this.events = configs.map[type].events || [];
 	} // initialize 
 }); // Class.create
+
+MyMap.getInstance = function(type) {
+	if (!MyMap._instances)
+		MyMap._instances = {};
+	if (! MyMap._instances[type])
+		MyMap._instances[type] = new MyMap(type);
+	return MyMap._instances[type];
+};
 

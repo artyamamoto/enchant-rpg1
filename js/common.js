@@ -18,3 +18,6 @@ function intval(s,base,default_val) {
 	return 0;
 }
 
+
+
+

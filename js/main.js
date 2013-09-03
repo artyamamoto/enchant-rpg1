@@ -8,8 +8,15 @@ window.onload = function() {
 	game.keybind(88,'a'); // X
 	game.keybind(90,'b'); // Z
 	game.fps = 15;
-	game.preload('map0.gif','chara0.gif','dq_title.png' ,
-					'avatarBg1.png','avatarBg2.png','avatarBg3.png','monster/bigmonster1.gif');
+	game.preload(
+		'map0.gif',
+		'chara0.gif',
+		'dq_title.png' ,
+		'avatarBg1.png',
+		'avatarBg2.png',
+		'avatarBg3.png',
+		'monster/bigmonster1.gif'
+	);
 	game.onload = function() {
 		var title = new TitleScene(game);
 		var map = new MapScene(game);
@@ -20,18 +27,6 @@ window.onload = function() {
 			
 		title.replaceScene();
 		title.addEventListener("touchstart" , function() {
-			/**
-			var p = new PromptScene('名前を入力してください', 'OK', 'cancel','名前');
-			p.callback = function(name) {
-				if (name) {
-					map.player.name = name;
-					map.replaceScene();
-				} else {
-					game.pushScene(p);
-				}
-			};
-			game.pushScene(p);
-			**/
 			var showprompt = function(callback) {
 				// prompt() 関数だと未入力の場合に、do{}while(name) などでまわすと
 				// ブラウザ側で「表示しない」とした場合に無限ループになる。
@@ -52,7 +47,6 @@ window.onload = function() {
 			showprompt(function(name) {
 				map.player.name = name;
 				map.replaceScene();
-				//fight.replaceScene();
 			});
 		});
 	};

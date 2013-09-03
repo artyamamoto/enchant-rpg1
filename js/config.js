@@ -6,7 +6,7 @@ var configs = {
 	},
 	"ajax" : {
 		"map" : {
-			"field" : "map-data.json"
+			"field" : "datas/map-field.json"
 		}
 	} , 
 	"map" : {

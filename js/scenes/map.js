@@ -7,7 +7,7 @@ var MapScene = Class.create(Scene, {
 		
 		this.game = game;
 		
-		this.map = new MyMap();
+		this.map = MyMap.getInstance("field");
 		this.player = new Player(this.map);
 		
 		this.stage = new Group();
@@ -36,3 +36,6 @@ var MapScene = Class.create(Scene, {
 		this.scene.stage.y = y;
 	}
 });
+
+
+
