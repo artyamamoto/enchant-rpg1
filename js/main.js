@@ -2,8 +2,32 @@
 // enchant();
 
 var game = game || {};
+var socket;
 
 window.onload = function() {
+	var sock = new io.connect('http://' + location.host + ':3000');
+	sock.on('player add' , function(player) {
+		console.log('player add : ' + player.name );
+		
+		var map = MapScene.getScene('field');
+		var friend = new RPGMap.Friend(map.map, 24, 18, 'aaa');
+		map.characters.addChild(friend);
+	});
+	sock.on('map sync' , function(map) {
+		console.log('a');
+		configs.map = map;
+		start();
+	});
+	sock.on('connect' , function() {
+		console.log('接続完了');
+		socket = sock;
+			
+		// game start 
+		// start();
+	});
+};
+
+function start() {
 	game = new Game(configs.game.width,configs.game.height);
 	game.keybind(88,'a'); // X
 	game.keybind(90,'b'); // Z
@@ -46,11 +70,12 @@ window.onload = function() {
 			};
 			showprompt(function(name) {
 				Player.getInstance().name = name;
+				socket.emit('player add' , Player.getInstance());
 				map.replaceScene();
 			});
 		});
 	};
-	async.parallel([
+/*	async.parallel([
 		function(next) {
 			jQuery.get( configs.ajax.map.field, {}, function(data) {
 				configs.map.field = data;
@@ -65,7 +90,8 @@ window.onload = function() {
 		}
 	], function() {
 		game.start();
-	});
+	}); */
+	game.start();
 	/* jQuery.get( configs.ajax.map.field, {}, function(data) {
 		configs.map.field = data;
 		game.start();

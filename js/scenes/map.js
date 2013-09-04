@@ -12,9 +12,9 @@ var MapScene = Class.create(Scene, {
 			
 		this.stage = new Group();
 		this.characters = new Group();
+	//	for (var i=this.map.characters.length-1;i >=0; i--) 
+	//		this.characters.addChild( this.map.characters[i] );		
 		this.characters.addChild(this.map.player);		
-		for (var i=this.map.characters.length-1;i >=0; i--) 
-			this.characters.addChild( this.map.characters[i] );		
 
 		this.stage.addChild(this.map);
 		this.stage.addChild(this.characters);

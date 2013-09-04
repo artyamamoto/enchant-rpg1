@@ -69,6 +69,8 @@ RPGMap.Player = Class.create(Sprite, {
 								//=== 海はだめ
 								if (! this.map.isSea(x,y)) {
 									this.isMoving = true;
+									socket.emit('player move' ,Player.getInstance(), this.x+16, this.y+16,x,y,this.dir);
+									
 									this.map.attr(this.x + 16, this.y + 16,'player', false);
 									this.map.attr(x,y,'player',this);
 									this._move();
