@@ -93,7 +93,7 @@ RPGMap.Player = Class.create(Sprite, {
 				} 
 				if (! event_flg) {
 					if (this._touched_cnt > 6) {
-						this.map.investigate(this.x + 8, this.y + 8, this,true);
+						this.map.investigate(this.x + 16, this.y + 16, this,true);
 						this._touched_cnt = 0;
 						this._touched = false;
 					}
@@ -119,6 +119,13 @@ RPGMap.Player = Class.create(Sprite, {
 					new FightScene(game, configs.scenes.map).replaceScene();
 				});
 			} */
+			var _map = this.map.attr(this.x + 16 , this.y + 16 , "map");
+			if (_map) {
+				if (_map == 'pop')
+					MapScene.popScene();
+				else
+					MapScene.pushScene(_map);
+			}
 		}
 	} , 
 	"talkto" : function(person) {

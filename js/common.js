@@ -29,6 +29,17 @@ function intval(s,base,default_val) {
 	return 0;
 }
 
-
-
+var async = {};
+async.parallel = function(list,oncomplete) {
+	var cnt = 0;
+	var finish = function() {
+		if (++cnt >= list.length) {
+			oncomplete();
+		}
+	};
+	for (var i=list.length -1; i>=0; i--) {
+		var func = list[i];
+		func.call(null, finish);
+	}
+};
 

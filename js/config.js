@@ -6,12 +6,11 @@ var configs = {
 	},
 	"ajax" : {
 		"map" : {
-			"field" : "datas/map-field.json"
+			"field" : "datas/map-field.json",
+			"dungeon" : "datas/map-dungeon.json"
 		}
 	} , 
-	"map" : {
-		"field" : {}
-	} , 
+	"map" : {} , 
 	"player" : null , 
 	"avatars" : [
 		

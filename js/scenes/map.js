@@ -46,6 +46,16 @@ var MapScene = Class.create(Scene, {
 		this.stage.y = y;
 	}
 });
-
-
-
+MapScene._maps = {};
+MapScene.getScene = function(type) {
+	if (! MapScene._maps[type]) {
+		MapScene._maps[type] = new MapScene(game, type);		
+	}
+	return MapScene._maps[type];
+};
+MapScene.pushScene = function(type) {
+	game.pushScene( MapScene.getScene(type) );
+};
+MapScene.popScene = function() {
+	game.popScene();
+};

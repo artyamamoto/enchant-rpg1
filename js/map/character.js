@@ -96,7 +96,6 @@ RPGMap.Character = Class.create(Sprite, {
 			else if (pos.y < pos2.y) 
 				this.dir = 4;
 			this.frame = this.dir * 3;
-			console.log('dir',this.dir);
 		} else {
 			this._stop = false;
 		}

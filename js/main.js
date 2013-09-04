@@ -19,7 +19,7 @@ window.onload = function() {
 	);
 	game.onload = function() {
 		var title = new TitleScene(game);
-		var map = new MapScene(game);
+		var map = MapScene.getScene('field');
 		
 		configs.scenes = {};
 		configs.scenes.title = title;
@@ -50,9 +50,24 @@ window.onload = function() {
 			});
 		});
 	};
-	jQuery.post( configs.ajax.map.field, {}, function(data) {
-		console.log(data);
+	async.parallel([
+		function(next) {
+			jQuery.get( configs.ajax.map.field, {}, function(data) {
+				configs.map.field = data;
+				next();
+			});
+		} ,
+		function(next) {
+			jQuery.get( configs.ajax.map.dungeon, {}, function(data) {
+				configs.map.dungeon = data;
+				next();
+			});
+		}
+	], function() {
+		game.start();
+	});
+	/* jQuery.get( configs.ajax.map.field, {}, function(data) {
 		configs.map.field = data;
 		game.start();
-	} , "json");
+	} , "json"); */
 };
