@@ -2,9 +2,8 @@
 var RPGMap = RPGMap || {};
 
 RPGMap.Map = Class.create(enchant.extendMap.ExMap, {
-	"checkTile" : function(x,y,n) {
-		var n = n || 0;
-		if (x < 0 || this.width <= x || y < 0 || this.height <= y || !this._data[n]) {
+	"_pos" : function(x,y) {
+		if (x < 0 || this.width <= x || y < 0 || this.height <= y) {
 			return false;
 		}
 		var width = this._image.width;
@@ -13,7 +12,54 @@ RPGMap.Map = Class.create(enchant.extendMap.ExMap, {
 		var tileHeight = this._tileHeight || height;
 		x = x / tileWidth | 0;
 		y = y / tileHeight | 0;
-		//      return this._data[y][x];
+		return {"x":x,"y":y};
+	},
+	"attr" : function(x,y,k,v) {
+		var pos = this._pos(x,y);
+		if (! pos)
+			return false;
+		x = pos.x; y = pos.y;
+		
+		if (v == undefined) {
+			if (this._attrs[y] && 
+				this._attrs[y][x] && 
+				this._attrs[y][x][k])
+			{
+				console.log("attr [" + x + "," + y + "," + k + "] get" , this._attrs[y][x][k]);
+				return this._attrs[y][x][k];
+			}
+			console.log("attr [" + x + "," + y + "," + k + "] get" , undefined);
+			return undefined;
+		} else {
+			if (! this._attrs[y])
+				this._attrs[y] = {};
+			if (! this._attrs[y][x])
+				this._attrs[y][x] = {};
+			this._attrs[y][x][k] = v;
+			
+			console.log("attr [" + x + "," + y + "," + k + "] set" , this._attrs[y][x][k]);
+		}
+	},
+	"hitTest" : function(x,y,player) {
+		var ret = enchant.extendMap.ExMap.prototype.hitTest.call(this,x,y);
+		if (ret === true)
+			return ret;
+		
+		if (player) {
+			var p = this.attr(x,y,"player");
+			if (p && p !== player)  
+				return true;
+		}
+		return false;
+	}, 
+	"checkTile" : function(x,y,n) {
+		var n = n || 0;
+		
+		var pos = this._pos(x,y);
+		if (! pos)
+			return false;
+		x = pos.x; y = pos.y;
+		
 		var data = this._data[n];
 		return data[y][x];
 	} ,
@@ -21,31 +67,31 @@ RPGMap.Map = Class.create(enchant.extendMap.ExMap, {
 		//var i = this.checkTile(x,y);
 		//if (i == 39) 
 		//	return true;
-		if (x < 0 || this.width <= x || y < 0 || this.height <= y) {
+		var pos = this._pos(x,y);
+		if (! pos)
 			return false;
-		}
-		var width = this._image.width;
-		var height = this._image.height;
-		var tileWidth = this._tileWidth || width;
-		var tileHeight = this._tileHeight || height;
-		x = x / tileWidth | 0;
-		y = y / tileHeight | 0;
+		x = pos.x; y = pos.y;
+
 		if (this.seaData && this.seaData[y] && this.seaData[y][x])	
 			return true;
 		return false;
 	},
-	"investigate" : function(x,y,is_foot) {
-		if (x < 0 || this.width <= x || y < 0 || this.height <= y) {
-			return false;
+	"investigate" : function(x,y,player, is_foot) {
+		// player 
+		if (player && ! is_foot) { 
+			var p = this.attr(x,y,"player");
+			if (p && p !== player) {
+				player.talkto(p);
+				return;
+			}
 		}
-		var width = this._image.width;
-		var height = this._image.height;
-		var tileWidth = this._tileWidth || width;
-		var tileHeight = this._tileHeight || height;
-		x = x / tileWidth | 0;
-		y = y / tileHeight | 0;
-		console.log(x,y);
+		var pos = this._pos(x,y);
+		if (! pos)
+			return false;
+		x = pos.x; y = pos.y;
 
+		
+		// events
 		for (var i=this.events.length-1; i>=0; i--) {
 			var data = this.events[i];
 			if (!data.ignored && x == data.pos[0] && y == data.pos[1]) {
@@ -66,16 +112,8 @@ RPGMap.Map = Class.create(enchant.extendMap.ExMap, {
 				return true;
 			}
 		}
-		/**
-		var type0 = this.checkTile(x,y);
-		var type1 = this.checkTile(x,y,1);
-		console.log(x,y);	
-		switch(type1) {
-			case 352 : console.log('この先、東京'); return true; break;
-			// case 107 : console.log('10円を見つけた'); return true; break;	
-		} */
 		if (is_foot) {
-			dialog = new DialogScene(game, {"message" : "%Name%はあしもとをしらべた。\nしかしなにもみつからなかった。", "name" : player.name });
+			dialog = new DialogScene(game, {"message" : "%Name%はあしもとをしらべた。\nしかしなにもみつからなかった。", "name" : name });
 			dialog.show();
 		}
 		return false;
@@ -92,10 +130,12 @@ RPGMap.Map = Class.create(enchant.extendMap.ExMap, {
 		enchant.extendMap.ExMap.call(this, 16, 16);
 		this.image = game.assets['map0.gif'];
 		this.loadData.apply(this, configs.map[type].map );
+		
 		this.collisionData = configs.map[type].collision || [];	
 		this.seaData = configs.map[type].seamap || [[]];
 		this.events = configs.map[type].events || [];
-
+		
+		this._attrs = {};	// 付随情報はここに記録する
 		
 		this.player = new RPGMap.Player(this, 24,18);
 		this.characters = [];

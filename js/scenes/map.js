@@ -2,12 +2,13 @@
 // enchant();
 
 var MapScene = Class.create(Scene, {
-	"initialize" : function(game) {
+	"initialize" : function(game, type) {
 		Scene.call(this);
 		
+		this.type = type || "field";
 		this.game = game;
 		
-		this.map = RPGMap.Map.getInstance("field");
+		this.map = RPGMap.Map.getInstance(this.type);
 			
 		this.stage = new Group();
 		this.characters = new Group();
@@ -30,9 +31,6 @@ var MapScene = Class.create(Scene, {
 		
 		this.addEventListener('enterframe' , this.enterframe);		
 	} ,
-	"addCharacter" : function(chara) {
-		this.stage().insertBefore(chara, this._map.createForeg);
-	}, 
 	"replaceScene" : function() {
 		this.game.replaceScene(this);
 	} , 
@@ -43,8 +41,9 @@ var MapScene = Class.create(Scene, {
 		var y = Math.min( (this.game.height - 16)/2 - map.player.y , 0 );
 		x = Math.max(this.game.width , x + map.width) - map.width;
 		y = Math.max(this.game.height, y + map.height) - map.height;
-		this.scene.stage.x = x;
-		this.scene.stage.y = y;
+		
+		this.stage.x = x;
+		this.stage.y = y;
 	}
 });
 

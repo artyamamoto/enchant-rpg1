@@ -29,8 +29,9 @@ var DialogScene = Class.create(Scene, {
 		**/
 	} , 
 	"next" : function() {
-		if (! this._window.next()) 
+		if (! this._window.next()) {
 			this.hide();
+		}
 	},
 	"show" : function() {
 		this.game.pushScene(this);
@@ -42,6 +43,10 @@ var DialogScene = Class.create(Scene, {
 		setTimeout( function() {
 			this.game.popScene();
 		}, 500);
+		
+		if (this.oncomplete) {
+			this.oncomplete();
+		}
 	}
 });
 

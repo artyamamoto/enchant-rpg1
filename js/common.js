@@ -1,4 +1,15 @@
 
+function rand(min, max) {
+	if (arguments.length == 2) {
+		
+	} else if (arguments.length == 1) {
+		max = min;
+		min = 0;
+	} else {
+		return 0;
+	}
+	return Math.floor(Math.random() * max + min);
+}
 function intval(s,base,default_val) {
 	default_val = default_val || 0;
 	

@@ -7,11 +7,15 @@ RPGMap.Character = Class.create(Sprite, {
 		this.y = y * 16;
 		
 		this.map = map;
-		
+		this.map.attr(this.x + 16,this.y + 16,'player',this);
+			
 		var surface = new Surface(96, 128);	
 		surface.draw(game.assets['chara0.gif'], 0,0,96,128,0,0,96,128);
 		this.image = surface;
 		
+		this._timing = rand(0,15);		
+		this._stop = false;
+			
 		this.isMoving = false;
 		this.dir = 0;
 		this.walk = 1;
@@ -22,23 +26,24 @@ RPGMap.Character = Class.create(Sprite, {
 				return ;
 			
 			this.frame = this.dir * 3 + this.walk;
-			return;
 
 			if (this.isMoving) {
 				this._move();
-			} else {
+			} else if (game.frame % 16 == this._timing && !this._stop) {
+				var r = rand(1,4);
+				
 				this.vx = this.vy = 0;
 				var dir = 0;
-				if (game.input.left) {
+				if (r == 1) {
 					this.dir = dir = 1;
 					this.vx = -4;
-				} else if (game.input.right) {
+				} else if (r == 2) {
 					this.dir = dir = 2;
 					this.vx = 4;
-				} else if (game.input.up) {
+				} else if (r == 3) {
 					this.dir = dir = 3;
 					this.vy = -4;
-				} else if (game.input.down) {
+				} else if (r == 4) {
 					this.dir = dir = 4;
 					this.vy = 4;
 				}
@@ -49,22 +54,14 @@ RPGMap.Character = Class.create(Sprite, {
 					var y = this.y + (this.vy ? this.vy / Math.abs(this.vy) * 16 : 0) + 16;
 					if (0 <= x && x < this.map.width) {
 						if (0 <= y && y < this.map.height) {
-							if (! this.map.hitTest(x, y)) {
+							if (! this.map.hitTest(x, y,this)) {
 								//=== 海はだめ
 								if (! this.map.isSea(x,y)) {
 									this.isMoving = true;
+									this.map.attr(this.x + 16, this.y + 16,'player', false);
+									this.map.attr(x,y,'player',this);
 									this._move();
 									event_flg = "move";
-								}
-							} else {
-								//=== 進行方向にボタンを押し続けている場合
-								//=== その進行方向の先を調べようとしている
-								if (this.dir == dir) {
-									this._try_investigate = this._try_investigate ? this._try_investigate + 1 : 1;
-									event_flg = "investigate";
-									if (this._try_investigate > 6) {
-										this.map.investigate(x,y);
-									}
 								}
 							}
 						}
@@ -84,5 +81,24 @@ RPGMap.Character = Class.create(Sprite, {
 			this.isMoving = false;
 			this.walk = 1;
 		}
-	} 
+	} ,
+	"talked" : function(person) {
+		if (person) {
+			this._stop = true;
+			var pos = this.map._pos(this.x + 16,this.y + 16);
+			var pos2 = this.map._pos(person.x + 16, person.y + 16);
+			if (pos.x > pos2.x) 
+				this.dir = 1;
+			else if (pos.x < pos2.x) 
+				this.dir = 2;
+			else if (pos.y > pos2.y)
+				this.dir = 3;
+			else if (pos.y < pos2.y) 
+				this.dir = 4;
+			this.frame = this.dir * 3;
+			console.log('dir',this.dir);
+		} else {
+			this._stop = false;
+		}
+	}  
 });

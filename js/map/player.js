@@ -7,7 +7,8 @@ RPGMap.Player = Class.create(Sprite, {
 		this.y = y * 16;
 		
 		this.map = map;
-		
+		this.map.attr(this.x + 16,this.y + 16,'player',this);
+			
 		var surface = new Surface(96, 128);	
 		surface.draw(game.assets['chara0.gif'], 0,0,96,128,0,0,96,128);
 		this.image = surface;
@@ -19,6 +20,9 @@ RPGMap.Player = Class.create(Sprite, {
 		this.vy = 0;
 		this._touched = false;
 		this._touched_cnt = 0;
+		
+		this._stop = false;
+		
 		this.addEventListener('touchstart' , function() {
 			this._touched = true;
 		});
@@ -27,8 +31,8 @@ RPGMap.Player = Class.create(Sprite, {
 		});
 
 		this.addEventListener('enterframe', function() {
-			if (! this.visible) 
-				return ;
+//			if (! this.visible) 
+//				return ;
 			
 			if (this._touched) 
 				this._touched_cnt++;
@@ -38,7 +42,7 @@ RPGMap.Player = Class.create(Sprite, {
 			this.frame = this.dir * 3 + this.walk;
 			if (this.isMoving) {
 				this._move();
-			} else {
+			} else {//if (! this._stop) {
 				this.vx = this.vy = 0;
 				var dir = 0;
 				if (game.input.left) {
@@ -61,10 +65,12 @@ RPGMap.Player = Class.create(Sprite, {
 					var y = this.y + (this.vy ? this.vy / Math.abs(this.vy) * 16 : 0) + 16;
 					if (0 <= x && x < this.map.width) {
 						if (0 <= y && y < this.map.height) {
-							if (! this.map.hitTest(x, y)) {
+							if (! this.map.hitTest(x, y,this)) {
 								//=== 海はだめ
 								if (! this.map.isSea(x,y)) {
 									this.isMoving = true;
+									this.map.attr(this.x + 16, this.y + 16,'player', false);
+									this.map.attr(x,y,'player',this);
 									this._move();
 									event_flg = "move";
 								}
@@ -75,7 +81,7 @@ RPGMap.Player = Class.create(Sprite, {
 									this._try_investigate = this._try_investigate ? this._try_investigate + 1 : 1;
 									event_flg = "investigate";
 									if (this._try_investigate > 6) {
-										this.map.investigate(x,y);
+										this.map.investigate(x,y,this);
 									}
 								}
 							}
@@ -87,7 +93,7 @@ RPGMap.Player = Class.create(Sprite, {
 				} 
 				if (! event_flg) {
 					if (this._touched_cnt > 6) {
-						this.map.investigate(this.x + 8, this.y + 8, true);
+						this.map.investigate(this.x + 8, this.y + 8, this,true);
 						this._touched_cnt = 0;
 						this._touched = false;
 					}
@@ -107,14 +113,27 @@ RPGMap.Player = Class.create(Sprite, {
 		{
 			this.isMoving = false;
 			this.walk = 1;
-			
-			if (Math.floor(Math.random() * 100) < 5) {
+			/*
+			if (rand(5) < 5) {
 				new SwitchScreenScene( game, function() {
 					new FightScene(game, configs.scenes.map).replaceScene();
 				});
-			} 
+			} */
 		}
-	} ,
+	} , 
+	"talkto" : function(person) {
+		// this._stop = true;
+		person.talked(this);
+		
+		var name = Player.getInstance().name;
+		var dialog = new DialogScene(game, {"message" : "%Name%さん、きょうはいいてんきですね。", "name" : name });
+		dialog.oncomplete = function() {
+			// console.log('oncomplete');
+			// this._stop = false;	
+			person.talked(null);
+		};
+		dialog.show();
+	} /* ,
 	"investigate" : function() {
 		if (! this.vx && ! this.vy) {
 			var x = this.x;
@@ -133,7 +152,7 @@ RPGMap.Player = Class.create(Sprite, {
 						//var i = map.checkTile(x,y);
 						//console.log(x,y,i);	
 						this._lock_investigate = true;
-						hit = this.map.investigate( x,y);
+						hit = this.map.investigate( x,y,);
 					}
 				}
 			}
@@ -142,5 +161,5 @@ RPGMap.Player = Class.create(Sprite, {
 				hit = this.map.investigate(this.x + 8, this.y + 8);
 			}
 		}
-	}
+	} */
 });
