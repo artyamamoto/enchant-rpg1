@@ -133,7 +133,7 @@ RPGMap.Player = Class.create(Sprite, {
 		person.talked(this);
 		
 		var name = Player.getInstance().name;
-		var dialog = new DialogScene(game, {"message" : "%Name%さん、きょうはいいてんきですね。", "name" : name });
+		var dialog = new DialogScene(game, {"message" : person.message, "name" : name });
 		dialog.oncomplete = function() {
 			// console.log('oncomplete');
 			// this._stop = false;	

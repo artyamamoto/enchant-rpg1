@@ -1,17 +1,24 @@
 
 var RPGMap = RPGMap || {};
 RPGMap.Character = Class.create(Sprite, {
-	"initialize" : function(map,x,y) {
+	"_animate" : function(dir,walk) {
+		this.frame = dir * 3 + walk;
+	},
+	"_createSurface" : function() {
+		var surface = new Surface(96, 128);
+		surface.draw(game.assets['chara0.gif'], 0,0,96,128,0,0,96,128);
+		this.image = surface;
+	},
+	"initialize" : function(map,x,y,message) {
 		Sprite.call(this, 32,32);
 		this.x = x * 16 - 8;
 		this.y = y * 16;
+		this._createSurface();
 		
 		this.map = map;
 		this.map.attr(this.x + 16,this.y + 16,'player',this);
 			
-		var surface = new Surface(96, 128);	
-		surface.draw(game.assets['chara0.gif'], 0,0,96,128,0,0,96,128);
-		this.image = surface;
+		this.message = message;
 		
 		this._timing = rand(0,15);		
 		this._stop = false;
@@ -25,7 +32,7 @@ RPGMap.Character = Class.create(Sprite, {
 			if (! this.visible) 
 				return ;
 			
-			this.frame = this.dir * 3 + this.walk;
+			this._animate(this.dir, this.walk);
 
 			if (this.isMoving) {
 				this._move();
@@ -95,9 +102,34 @@ RPGMap.Character = Class.create(Sprite, {
 				this.dir = 3;
 			else if (pos.y < pos2.y) 
 				this.dir = 4;
-			this.frame = this.dir * 3;
+			this._animate(this.dir, 1);
 		} else {
 			this._stop = false;
 		}
 	}  
 });
+
+RPGMap.Villager1 = Class.create(RPGMap.Character, {
+	"_animate" : function(dir,walk) {
+		this.frame = dir * 3 + walk;
+	} , 
+	"_createSurface" : function() {
+		var surface = new Surface(96, 128);
+		surface.draw(game.assets['chara0.gif'], 96 * 2,0,96,128,0,0,96,128);
+		this.image = surface;
+	},
+});
+RPGMap.Villager2 = Class.create(RPGMap.Character, {
+	"_animate" : function(dir,walk) {
+		this.frame = dir * 3 + walk;
+	} , 
+	"_createSurface" : function() {
+		var surface = new Surface(96, 128);
+		surface.draw(game.assets['chara0.gif'], 96 * 1,0,96,128,0,0,96,128);
+		this.image = surface;
+	},
+});
+
+
+
+

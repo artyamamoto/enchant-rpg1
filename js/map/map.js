@@ -99,8 +99,8 @@ RPGMap.Map = Class.create(enchant.extendMap.ExMap, {
 					e.ignored = true;
 					
 					dialog = new DialogScene(game, {"message" : e.pickup, "name" : name });
-					this._data[1][y][x] = -1;
-					this.collisionData[y][x] = 0;
+					this._data[1][e.pos[1]][e.pos[0]] = -1;
+					this.collisionData[e.pos[1]][e.pos[0]] = 0;
 				} else if (e.map) {
 					if (e.map != "pop")
 						MapScene.pushScene(e.map);
@@ -201,7 +201,10 @@ RPGMap.Map = Class.create(enchant.extendMap.ExMap, {
 		this.characters = [];
 		for (var i=data.characters.length-1; i>=0; i--) {
 			var c = data.characters[i];
-			this.characters.push( new RPGMap.Character(this, c[0], c[1]) );	
+			var _class = RPGMap[c[2]];
+			var _message = c[3];
+				
+			this.characters.push( new (_class)(this, c[0], c[1], _message) );	
 		}
 	} // initialize 
 }); // Class.create
