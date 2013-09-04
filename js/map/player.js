@@ -69,7 +69,11 @@ RPGMap.Player = Class.create(Sprite, {
 								//=== 海はだめ
 								if (! this.map.isSea(x,y)) {
 									this.isMoving = true;
-									socket.emit('player move' ,Player.getInstance(), this.x+16, this.y+16,x,y,this.dir);
+									
+									var pos = this.map._pos(x,y);	
+									var player = Player.getInstance();
+									player.map.x = pos.x;
+									player.map.y = pos.y;
 									
 									this.map.attr(this.x + 16, this.y + 16,'player', false);
 									this.map.attr(x,y,'player',this);
@@ -104,7 +108,13 @@ RPGMap.Player = Class.create(Sprite, {
 		});
 	} ,
 	"_move" : function() {
-		 this.moveBy(this.vx, this.vy);	
+		var player = Player.getInstance();
+		this.moveBy(this.vx, this.vy);
+		
+		player.pos.x = this.x;
+		player.pos.y = this.y;
+		player.sync();
+		
 		//this.x += this.vx;
 		//this.y += this.vy;	
 		if (game.frame % 3 == 0) {

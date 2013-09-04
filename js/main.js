@@ -6,15 +6,14 @@ var socket;
 
 window.onload = function() {
 	var sock = new io.connect('http://' + location.host + ':3000');
-	sock.on('player add' , function(player) {
+	sock.on('player sync' , function(player) {
 		console.log('player add : ' + player.name );
 		
-		var map = MapScene.getScene('field');
-		var friend = new RPGMap.Friend(map.map, 24, 18, 'aaa');
+		var map = MapScene.getScene(player.map.type);
+		var friend = new RPGMap.Friend(map.map, player.map.x, player.map.y, 'aaa');
 		map.characters.addChild(friend);
 	});
 	sock.on('map sync' , function(map) {
-		console.log('a');
 		configs.map = map;
 		start();
 	});
@@ -70,7 +69,7 @@ function start() {
 			};
 			showprompt(function(name) {
 				Player.getInstance().name = name;
-				socket.emit('player add' , Player.getInstance());
+				Player.getInstance().sync();
 				map.replaceScene();
 			});
 		});

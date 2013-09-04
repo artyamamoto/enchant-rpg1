@@ -1,8 +1,22 @@
 
 var Player = Class.create(Character, {
-	"name" : "あそびにん" , 
+	"name" : null , 
+
+	"sync" : function() {
+		if (! this.name) 
+			return;
+		
+		socket.emit('player sync' , {
+			"name" : this.name , 
+			"pos" : this.pos , 
+			"map" : this.map 
+		});
+	} ,
+	
 	"initialize" : function() {
 		Character.call(this);
+		this.pos = {"x":0 , "y":0};
+		this.map = {"type":null, "x":0, "y":0};
 	}
 });
 Player._instance = null;

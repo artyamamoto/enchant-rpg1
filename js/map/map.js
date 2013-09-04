@@ -198,6 +198,15 @@ RPGMap.Map = Class.create(enchant.extendMap.ExMap, {
 		
 		
 		this.player = new RPGMap.Player(this, data.player[0],data.player[1]);
+		
+		var _player = Player.getInstance();
+		_player.map.type = this.type;
+		_player.map.x = data.player[0];
+		_player.map.y = data.player[1];
+		_player.pos.x = this.player.x;
+		_player.pos.y = this.player.y;
+		_player.sync();
+		
 		this.characters = [];
 		for (var i=data.characters.length-1; i>=0; i--) {
 			var c = data.characters[i];

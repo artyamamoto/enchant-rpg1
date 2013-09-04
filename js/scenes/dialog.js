@@ -29,7 +29,7 @@ var DialogScene = Class.create(Scene, {
 		**/
 	} , 
 	"next" : function() {
-		if (! this._window.next()) {
+		if (this._window && ! this._window.next()) {
 			this.hide();
 		}
 	},
