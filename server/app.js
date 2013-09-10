@@ -34,6 +34,13 @@ var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
+var socketobj = require('./socket');
+
+var socketio = require('socket.io').listen(server);
+socketio.on('connection' , function(socket) {
+	new socketobj(socket);
+});
+/*
 //=== map 
 var map = {};
 map.field = require('../datas/map-field.json');
@@ -59,5 +66,11 @@ socketio.on('connection' , function(socket) {
 			delete players[socket.id];
 		} catch(e) { console.log(e); }
 	});
+	//=== init 
+	( function() {
+		for (var socket_id in players)
+			socket.broadcast.emit('player sync' , player);
+	})();
 });
+**/
 

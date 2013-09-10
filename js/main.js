@@ -3,27 +3,38 @@
 
 var game = game || {};
 var socket;
+var socket_sessid = null;
 
 window.onload = function() {
-	var sock = new io.connect('http://' + location.host + ':3000');
-	sock.on('player sync' , function(player) {
-		console.log('player add : ' + player.name );
-		
-		var map = MapScene.getScene(player.map.type);
-		var friend = new RPGMap.Friend(map.map, player.map.x, player.map.y, 'aaa');
-		map.characters.addChild(friend);
-	});
-	sock.on('map sync' , function(map) {
-		configs.map = map;
-		start();
-	});
-	sock.on('connect' , function() {
-		console.log('接続完了');
-		socket = sock;
+	try {
+		var sock = new io.connect('http://' + location.host + ':3000');
+		sock.on('player sync' , function(socket_id, player) {
+			console.log('player add : ' + player.name );
 			
-		// game start 
-		// start();
-	});
+			var map = MapScene.getScene(player.map.type);
+			var friend = new RPGMap.Friend(map.map, player.map.x, player.map.y, 'aaa');
+			map.characters.addChild(friend);
+		});
+		sock.on('map sync' , function(map) {
+			configs.map = map;
+			start();
+		});
+		sock.on('connect' , function() {
+			socket_sessid = sock.socket.sessionid;
+			console.log('接続完了');
+			socket = sock;
+				
+			// game start 
+			// start();
+		});
+		sock.on('connect_failed', function() {
+			console.log('接続失敗');
+			alert('WebSocket接続に失敗しました。');
+		});
+	} catch(e) {
+		console.log('エラー：' + e);
+		alert('WebSocket接続時にエラーが発生しました。');
+	}
 };
 
 function start() {
