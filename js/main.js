@@ -10,6 +10,7 @@ window.onload = function() {
 	game.fps = 15;
 	game.preload(
 		'map0.gif',
+		//'map1.gif',
 		'chara0.gif',
 		'dq_title.png' ,
 		'avatarBg1.png',
