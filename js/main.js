@@ -16,6 +16,7 @@ window.onload = function() {
 		'avatarBg1.png',
 		'avatarBg2.png',
 		'avatarBg3.png',
+		'pisaro.jpg',
 		'monster/bigmonster1.gif'
 	);
 	game.onload = function() {

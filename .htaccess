@@ -1,2 +1,5 @@
-AddDefaultCharset UTF-8
+RewriteEngine On
+RewriteRule ^(.*).(gif|jpg|jpeg|png)$ images/$1.$2 [L]
+
+#AddDefaultCharset UTF-8
 
