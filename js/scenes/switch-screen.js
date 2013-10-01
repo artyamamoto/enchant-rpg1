@@ -10,6 +10,7 @@ var SwitchScreenScene = Class.create(Scene, {
 		sp.image = sf;
 		this.addChild(sp);
 		
+		var fps_org = game.fps;
 		game.fps = 64;
 		var frame = 0;
 		this.addEventListener("enterframe" , function() {
@@ -23,6 +24,7 @@ var SwitchScreenScene = Class.create(Scene, {
 			sf.context.fillRect(center,0,w,game.height);
 			
 			if (frame == 14) {
+				game.fps = fps_org;
 				callback();
 			}
 		});	

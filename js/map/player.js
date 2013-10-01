@@ -113,12 +113,14 @@ RPGMap.Player = Class.create(Sprite, {
 		{
 			this.isMoving = false;
 			this.walk = 1;
-			/*
-			if (rand(5) < 5) {
+			
+			if (rand(0,1000) < 100) {
 				new SwitchScreenScene( game, function() {
-					new FightScene(game, configs.scenes.map).replaceScene();
+					new FightScene(game).start({
+						"end" : function() { game.popScene(); }
+					});
 				});
-			} */
+			} 
 			var _map = this.map.attr(this.x + 16 , this.y + 16 , "map");
 			if (_map) {
 				if (_map == 'pop')
