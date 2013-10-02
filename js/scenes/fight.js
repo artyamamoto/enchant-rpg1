@@ -111,11 +111,21 @@ var FightScene = Class.create(Scene, {
 						}
 					break;
 					case 'item':
-						this.queue.push({"message" : "{0}はせいすいをふりかけた。".format(p.name)});
+						this.queue.push({"message" : "{0}はせいすいをふりかけた！".format(p.name)});
 						this.queue.push({"message" : "しかしこうかがなかった。","append":true});
 					break;
 					case 'defence' :
-						this.queue.push({"message" : "{0}はみをまもっている。".format(p.name) });
+						this.queue.push({"message" : "{0}はみをまもっている！".format(p.name) });
+					break;
+					case 'escape':
+						this.queue.push({"message" : "{0}たちはにげだした！".format(p.name)});
+						if (rand(0,10) < 1) {
+							this.queue.push({"message" : "しかしまわりこまれてしまった！","append":true});
+						} else {
+							this.queue.push({"callback" : function() {self.end(); }});
+							ignore = true;
+							return false;
+						}
 					break;
 					default :
 						console.log('unknown command:' + p.action); 
@@ -357,9 +367,12 @@ var FightScene = Class.create(Scene, {
 		
 		var y = self.frame4.y + 10;
 		var i = -1;
-		[name, 'こうげき','じゅもん','ぼうぎょ','どうぐ'].forEach(function(menustr) {
+		var menus = [name, 'こうげき','じゅもん','ぼうぎょ','どうぐ'];
+		if (self.menuCurrentPlayer == 0) 
+			menus = [name, 'こうげき','じゅもん','ぼうぎょ','にげる'];
+		menus.forEach(function(menustr) {
 			++i;
-			
+				
 			var left = self.frame1.x + 10;
 			var label = self._label(menustr, left + 12 , 0);
 			label.y = y + (label._boundHeight * 1.6) * (i - 0.7);
@@ -613,6 +626,8 @@ var FightScene = Class.create(Scene, {
 					this.players[this.menuCurrentPlayer].action = 'defence';
 				} else if (label.text.indexOf('どうぐ') >= 0) {
 					this.players[this.menuCurrentPlayer].action = 'item';
+				} else if (label.text.indexOf('にげる') >= 0) {
+					this.players[this.menuCurrentPlayer].action = 'escape';
 				}
 				var nextmenu = false;
 				while(this.menuCurrentPlayer + 1 < this.players.length) {
